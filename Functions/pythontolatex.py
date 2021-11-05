@@ -10,11 +10,11 @@ icc_min = 0.75
 
 def meanStdtoLatex(measurement):
     if measurement == 'FM':
-            directory = mainDirectory + '/Results/ICC single measurement'
+            directory = mainDirectory + '/Results_MakingSense/ICC single measurement'
             os.chdir(directory)
 
     elif measurement == 'AM':
-            directory = mainDirectory + '/Results/ICC averaged measurement'
+            directory = mainDirectory + '/Results_MakingSense/ICC averaged measurement'
             os.chdir(directory)       
    
     if measurement == 'FM':
@@ -132,11 +132,11 @@ def meanStdtoLatex(measurement):
     
 def iccmdctoLatex(measurement):
     if measurement == 'FM':
-            directory = mainDirectory + '/Results/ICC single measurement'
+            directory = mainDirectory + '/Results_MakingSense/ICC single measurement'
             os.chdir(directory)
 
     elif measurement == 'AM':
-            directory = mainDirectory + '/Results/ICC averaged measurement'
+            directory = mainDirectory + '/Results_MakingSense/ICC averaged measurement'
             os.chdir(directory)       
    
     if measurement == 'FM':
@@ -267,7 +267,7 @@ def iccmdctoLatex(measurement):
                       '&' + j + ' \ \ '))        
         
 def mdcRawToLatex():
-    directory = mainDirectory + '/Results/ICC single measurement'
+    directory = mainDirectory + '/Results_MakingSense/ICC single measurement'
     os.chdir(directory)
     xls1 = pd.read_excel('FM_Zitten_ICC.xlsx', index_col = 0)
     xls2= pd.read_excel('FM_Staan_ICC.xlsx', index_col = 0)
@@ -275,7 +275,7 @@ def mdcRawToLatex():
     xls4 = pd.read_excel('FM_Staan ogen dicht_ICC.xlsx', index_col = 0)
     xls5= pd.read_excel('FM_Staan op foam_ICC.xlsx', index_col = 0)
 
-    directory = mainDirectory + '/Results/ICC averaged measurement'
+    directory = mainDirectory + '/Results_MakingSense/ICC averaged measurement'
     os.chdir(directory)       
     xls6= pd.read_excel('AM_Staan_ICC.xlsx', index_col = 0)
     xls7= pd.read_excel('AM_staan voeten samen_ICC.xlsx', index_col = 0)

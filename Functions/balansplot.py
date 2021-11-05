@@ -14,7 +14,7 @@ mainDirectory = os.getcwd()
 saveTo = mainDirectory + '/Figures'
 
 def plotSIT():
-    directory = mainDirectory + '/Results/ICC single measurement'
+    directory = mainDirectory + '/Results_MakingSense/ICC single measurement'
     os.chdir(directory)
     loadfile = 'FM_Zitten_ICC.xlsx'
     xls = pd.read_excel(loadfile)
@@ -252,7 +252,7 @@ def plotStanding():
             filename = 'Staan voeten samen'
             afkorting = 'FT'
     
-        directory = mainDirectory + '/Results/ICC single measurement'
+        directory = mainDirectory + '/Results_MakingSense/ICC single measurement'
         os.chdir(directory)
         
         loadfile = 'FM_' + filename + '_ICC.xlsx'
@@ -278,7 +278,7 @@ def plotStanding():
         data_plot1.loc[29:36,'Type'] = 'Complexity features' 
         data_plot1['Measurement'] = 'FM' 
         
-        directory = mainDirectory + '/Results/ICC Averaged measurement'
+        directory = mainDirectory + '/Results_MakingSense/ICC Averaged measurement'
         os.chdir(directory)
         
         loadfile = 'AM_' + filename + '_ICC.xlsx'

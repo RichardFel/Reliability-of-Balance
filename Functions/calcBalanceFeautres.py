@@ -26,142 +26,117 @@ up/down:                acceleration[ ,0]
 Literature is cited at the bottom.
 '''
 
-import unittest
 import os
-import sys
-
 import numpy as np
 
 mainDirectory = os.getcwd()
-sys.path.append(str(mainDirectory + '/Functions'))
-import saveResults 
-import errors
-from spatioTemporalFeatures import spatioTemporal
-from frequencyFeatures import fastfourierTransform
-from complexityFeatures import Complexity
-from loadFiles import loadCsv     
-from visualise import Visualisation
-from proces import Processing
+import Functions.saveResults as saveResults
+import Functions.errors as errors
+from Functions.spatioTemporalFeatures import spatioTemporal
+from Functions.frequencyFeatures import fastfourierTransform
+from Functions.complexityFeatures import Complexity
+from Functions.loadFiles import loadCsv, loadCsv_MakingSense     
+from Functions.visualise import Visualisation
+from Functions.proces import Processing
+
+def calcFeatures(settings, plotje, verbose = None):
+    data_dir = mainDirectory + '/Data'
+    files = os.listdir(data_dir)
+    results =  saveResults.saveresults_balance()  
+    for file in files:
+        split = file.split(' ')
+        subject = split[0]
+        testType = file
+        trial = 0
+        print(f'\n Analysing subject {subject} \n')
+        try:         
+            lowBack = read_data(locInExcel = file,
+                                testType = file,
+                                subject =  subject,            
+                                time = 60, 
+                                plotje = False, 
+                                verbose = False,
+                                makingSense = False
+                                )
+            
+            lowBack = calculate_feautres(lowBack, 
+                                         plotje, 
+                                         verbose
+                                         )   
 
 
-# Making sense
-Making_sense = True
-rehabC = ('P','H') # Set availible rehabcentres
-testTypes = ('Test','Hertest') # Testtype
-nSubjects = 1  # Set number of participants
-tasks = np.array([('Zitten', 60,0),  # Condition name, time, number
-                  ('Staan',60,1), 
-                  ('Staan voeten samen', 60,3),
-                  ('Staan ogen dicht', 30,5),
-                  ('Staan op foam', 30, 7)
-                  ])
-    
-settings = {'rehabC' : rehabC,
-            'testTypes': testTypes,
-            'nSubjects': nSubjects,
-            'tasks': tasks
-            }
-
-def calcFeatures(settings, Making_sense, measuringTwice, plotje, verbose = None):
-    if Making_sense == True:
-        if measuringTwice == False:
-            for task in settings['tasks']:                                          
-                if verbose:
-                    print('\n' + task[0] + '\n')        
-                results =  saveResults.saveresults_balance()                                    
-                results, lowBack = proces_data(rehabC = settings['rehabC'],         
-                                               nSubjects= settings['nSubjects'],    
-                                               testTypes = settings['testTypes'],   
-                                               taskNum = task[2],                   
-                                               time = task[1],                      
-                                               results = results,                   
-                                               trial = 0,                         
-                                               plotje = plotje   ,
-                                               verbose = verbose
-                                               )       
-                try:
-                    os.chdir(mainDirectory + '/Results/Single measurement')
-                    saveAs = 'FM_' + str(task[0]) + '.xlsx'
-                    results.to_excel(saveAs)   
-                    os.chdir(mainDirectory)
-                    if verbose:
-                        print('Results saved')
-                except IndexError:
-                    if verbose:
-                        print('Save Error: No data in the results dataframe')
-                    
-        else:
-            for task in settings['tasks'][1:]:  
-                if verbose:
-                    print('\n' + task[0] + '\n')                                         
-                results =  saveResults.saveresults_balance()                                      
-                for j in range(2):                                                  
-                    taskNum = int(task[2]) + j
-                    results, lowBack = proces_data(rehabC = settings['rehabC'],        
-                                                   nSubjects= settings['nSubjects'],   
-                                                   testTypes = settings['testTypes'],  
-                                                   taskNum = taskNum,              
-                                                   time = task[1],                 
-                                                   results = results,               
-                                                   trial = j,                       
-                                                   plotje = plotje,
-                                                   verbose = verbose
-                                                   )      
-                try:
-                    os.chdir(mainDirectory + '/Results/Averaged measurements')
-                    saveAs = 'AM_' + task[0] + '.xlsx'
-                    results.to_excel(saveAs)    
-                    os.chdir(mainDirectory)
-                    if verbose:
-                        print('Results saved')
-                except IndexError:
-                    if verbose:
-                        print('Save Error: No data in the results dataframe')                             
-    else:
-        data_dir = mainDirectory + '/Data'
-        files = os.listdir(data_dir)
-        results =  saveResults.saveresults_balance()  
-        for file in files:
-            split = file.split(' ')
-            subject = split[0]
-            testType = file
-            trial = 0
-  
-            try:         
-                lowBack = read_data(locInExcel = file,
-                                    testType = file,
-                                    subject =  subject,            
-                                    time = 60, 
-                                    plotje = False, 
-                                    verbose = False,
-                                    making_sense = False
-                                    )
-                
-                lowBack = calculate_feautres(lowBack, 
-                                             plotje, 
-                                             verbose
-                                             )   
-    
-
-                results = saveResults.updatedataframe_balance(results,      
-                                                              subject, 
-                                                              testType,
-                                                              trial,
-                                                              lowBack
-                                                              )
-            except:  
+            results = saveResults.updatedataframe_balance(results,      
+                                                          subject, 
+                                                          testType,
+                                                          trial,
+                                                          lowBack
+                                                          )
+        except Exception as e: 
                 if verbose:                                                   
-                        print('Subject: ', subject, 'Not included' + '\n') 
+                    print('Subject: ', subject, 'Not included' + '\n')
+                print(e)
 
 
-        os.chdir(mainDirectory + '/Results/Michiel')
-        saveAs = 'Onstabiel_zitten.xlsx'
-        results.to_excel(saveAs)    
-        os.chdir(mainDirectory)
+    saveAs = 'Results/Onstabiel_zitten.xlsx'
+    results.to_excel(saveAs)    
+
+def calcFeaturesMakingSense(settings, measuringTwice, plotje, verbose = None):
+    makingSense = True
+    
+    if measuringTwice == False:
+        for task in settings['tasks']:                                          
+            if verbose:
+                print('\n' + task[0] + '\n')        
+            results =  saveResults.saveresults_balance()                                    
+            results, lowBack = proces_data(rehabC = settings['rehabC'],         
+                                           nSubjects= settings['nSubjects'],    
+                                           testTypes = settings['testTypes'],   
+                                           taskNum = task[2],                   
+                                           time = task[1],                      
+                                           results = results,                   
+                                           trial = 0,                         
+                                           plotje = plotje   ,
+                                           verbose = verbose,
+                                           makingSense = makingSense
+                                           )       
+            try:
+                saveAs = 'Results_MakingSense/Single measurement/' + 'FM_' + task[0] + '.xlsx'
+                results.to_excel(saveAs)   
+                if verbose:
+                    print('Results saved')
+            except IndexError:
+                if verbose:
+                    print('Save Error: No data in the results dataframe')
+    else:
+        for task in settings['tasks'][1:]:  
+            if verbose:
+                print('\n' + task[0] + '\n')                                         
+            results =  saveResults.saveresults_balance()                                      
+            for j in range(2):                                                  
+                taskNum = int(task[2]) + j
+                results, lowBack = proces_data(rehabC = settings['rehabC'],        
+                                               nSubjects= settings['nSubjects'],   
+                                               testTypes = settings['testTypes'],  
+                                               taskNum = taskNum,              
+                                               time = task[1],                 
+                                               results = results,               
+                                               trial = j,                       
+                                               plotje = plotje,
+                                               verbose = verbose,
+                                               makingSense = True
+                                               )      
+            try:
+                saveAs = '/Results_MakingSense/Averaged measurements/' + 'AM_' + task[0] + '.xlsx'
+                results.to_excel(saveAs)    
+                if verbose:
+                    print('Results saved')
+            except IndexError:
+                if verbose:
+                    print('Save Error: No data in the results dataframe')                             
+
         
 def proces_data(rehabC, nSubjects, testTypes, taskNum, time, results, 
-                trial, plotje, verbose):
-    
+                trial, plotje, verbose, makingSense):
     for RevC in rehabC:                                                         
         for nSubject in range(1,nSubjects+1):                                    
             subject = 'S' + str(nSubject).zfill(3) + RevC 
@@ -171,49 +146,61 @@ def proces_data(rehabC, nSubjects, testTypes, taskNum, time, results,
                     locInExcel += 19
                 if verbose:
                     print('\n subject: ', subject, '   test type: ', testType )
-                
-                try:         
+                try:    
+
                     lowBack = read_data(locInExcel,
                                         testType,
                                         subject,            
                                         time, 
                                         plotje, 
-                                        verbose
+                                        verbose,
+                                        makingSense
                                         )
-                    
                     lowBack = calculate_feautres(lowBack, 
                                                  plotje, 
                                                  verbose
                                                  )         
-
-                    results = saveResults.updatedataframe_balance(results,      
-                                                                  subject, 
-                                                                  testType,
-                                                                  trial,
-                                                                  lowBack
-                                                                  )
-                except:  
+                except Exception as e: 
                     if verbose:                                                   
-                            print('Subject: ', subject, 'Not included' + '\n')
-    return results, lowBack
+                        print('Subject: ', subject, 'Not included' + '\n')
+                    print(e)
+                    continue
+                results = saveResults.updatedataframe_balance(results,      
+                                                              subject, 
+                                                              testType,
+                                                              trial,
+                                                              lowBack
+                                                              )
 
-                
-def read_data(locInExcel, testType, subject, time, plotje, verbose, making_sense):  
+    return results, lowBack
     
-    try:
-        lowBack            = loadCsv(owd = mainDirectory,
-                                     position = locInExcel,  
-                                     testType = testType,
-                                     plotje = plotje,
-                                     resample = True,
-                                     subjn = subject,
-                                     making_sense = making_sense
-                                     )
-    except (FileNotFoundError, ValueError):
-        if verbose:
-            print('Input Error: No input file found')
-     
-    # Checks if signal length is as expected
+         
+def read_data(locInExcel, testType, subject, time, plotje, verbose, makingSense):  
+    if makingSense:
+        try:
+            lowBack = loadCsv_MakingSense(owd = mainDirectory,
+                                         position = locInExcel,  
+                                         testType = testType,
+                                         plotje = plotje,
+                                         resample = True,
+                                         subjn = subject
+                                         )
+        except (FileNotFoundError, ValueError):
+            if verbose:
+                print('Input Error: No input file found')
+    else:
+         try:
+             lowBack = loadCsv(owd = mainDirectory,
+                                 position = locInExcel,  
+                                 testType = testType,
+                                 plotje = plotje,
+                                 resample = True,
+                                 subjn = subject
+                                 )
+         except (FileNotFoundError, ValueError):
+                if verbose:
+                    print('Input Error: No input file found')
+
 
     try:
         if  time == '60':
@@ -237,9 +224,6 @@ def read_data(locInExcel, testType, subject, time, plotje, verbose, making_sense
                 lowBack.gyroscope = lowBack.gyroscope[0:2600]
                 if verbose:
                     print('Checkpoint 1: Load succesfull')
-           
-            return lowBack
-    
     except errors.inputTooShortError:
         if verbose:
             print('Input Length Error: Input file too short')
@@ -248,12 +232,12 @@ def read_data(locInExcel, testType, subject, time, plotje, verbose, making_sense
         if verbose:
             print('Input Length Error: Input file too long')
         raise Exception        
-
+    return lowBack
 
 def calculate_feautres(lowBack, plotje, verbose, area = None):             
     # Pre rotation: acc = [VT, ML, AP], Post rotation: acc = [AP, ML, VT]
-    lowBack.rotAcc, lowBack.rotGyro = Processing.bruijn_rotation(lowBack,   
-                                                                 plotje = plotje) 
+    lowBack.rotAcc, lowBack.rotGyro = Processing.bruijn_rotation(lowBack,plotje = plotje) 
+    
     # Third order butterworth highpass 0.4 Hz 
     lowBack.filtAcc = Processing.filt_high(lowBack.rotAcc,  
                                                     lowBack.sampleFreq,   
@@ -408,100 +392,6 @@ def calculate_feautres(lowBack, plotje, verbose, area = None):
     return lowBack
 
 
-class Testfeatures(unittest.TestCase):
-    def test_complete(self) :
-        nSubject = 1 
-        rehabC = ('P')
-        trial = 0
-        tasks = np.array([('Zitten', 60, 0)])     
-#        tasks = np.array([('Foam', 30, 7)])     
-
-        subject = 'S' + str(nSubject).zfill(3) + rehabC[0] 
-        testType = 'Test'
-        locInExcel = int(tasks[0,2])
-        lowBack = read_data(locInExcel = locInExcel,testType = testType, subject = subject, time = tasks[0,1], plotje = True)       
-        lowBack = calculate_feautres(lowBack, plotje = True)
-        results =  saveResults.saveresults_balance()
-        results = saveResults.updatedataframe_balance(results, 
-                          subject, 
-                          testType,
-                          trial,
-                          lowBack)
-        
-        
-        print("ML RMS: " + str(lowBack.accMLrms))
-        print("ML FFT TOT: " + str(lowBack.fftsignalML.fft_tot))       
-        
-        
-    def test_Tooshort(self):
-        nSubject = 2 
-        rehabC = ('P')
-        tasks = np.array([('Zitten', 60, 0)])     
-        subject = 'S' + str(nSubject).zfill(3) + rehabC[0] 
-        testType = 'Test'
-        locInExcel = int(tasks[0,2])
-        try:
-            read_data(locInExcel = locInExcel,testType = testType, subject = subject, time = tasks[0,1], plotje = False)           
-        except Exception:
-            pass
-            
-    def test_noFile(self):
-        nSubject = 5 
-        rehabC = ('P')
-        tasks = np.array([('Staan',60,1)])
-        subject = 'S' + str(nSubject).zfill(3) + rehabC[0] 
-        testType = 'Test'
-        locInExcel = int(tasks[0,2])
-        try:
-            read_data(locInExcel = locInExcel,testType = testType, subject = subject, time = tasks[0,1], plotje = False)           
-        except Exception:
-            pass          
-            
-    def test_process(self):
-        class Sensor:
-            def __init__(self, sampleFreq, acceleration, gyroscope):
-                self.sampleFreq = sampleFreq
-                self.acceleration = acceleration
-                self.gyroscope = gyroscope
-                
-        time = np.arange(0,10,0.01)
-        Freq1 = 1
-        Freq2 = 2
-        amplitude1 = amplitude3 = np.sin(2 *np.pi*Freq1 * time)
-        amplitude2 = np.sin(2 *np.pi*Freq2 * time)
-        #noise = np.random.normal(0,1,10000)
-        acceleration =  gyroscope = np.zeros((len(time),3))
-        acceleration[:,0] = gyroscope[:,0] = amplitude1
-        acceleration[:,1] = gyroscope[:,1] = amplitude2
-        acceleration[:,2] = gyroscope[:,2] = amplitude3
-        lowBack = Sensor(0.01, acceleration, gyroscope)
-        #        Visualisation.plot1(acceleration)
-        lowBack = calculate_feautres(lowBack, plotje = False, area = False)
-        #        print("AP RMS: " + str(lowBack.accAPrms))
-        #        print("AP FFT TOT: " + str(lowBack.fftsignalAP.fft_tot))
-
-        '''
-        nTests = 8
-        import matplotlib.pyplot as plt
-        fig1, ax2 = plt.subplots(nTests)
-        # Test Frequency & RMS 
-        for i in range(0,nTests,1):
-            amplitude3 = amplitude3 + np.random.normal(0,0.1 * i,1000)
-            ax2[i].plot(amplitude3) 
-            lowBack.acceleration[:,2] = amplitude3
-            lowBack = calculate_feautres(lowBack, plotje = False, area = False)
-            print("PLot: " + str(i))
-        '''    
-  
-       
-if __name__ == "__main__":
-     calcFeatures(settings,Making_sense, measuringTwice = False, plotje = False, 
-                   verbose = True
-                   )       
-     calcFeatures(settings, Making_sense, measuringTwice = True, plotje = False, 
-                   verbose = True
-                   )      
-    
     
 '''
 Literature:  

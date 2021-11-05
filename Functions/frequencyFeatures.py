@@ -1,5 +1,5 @@
 import numpy as np
-from visualise import Visualisation
+from Functions.visualise import Visualisation
 
 class fastfourierTransform:
     def __init__(self, signal, sampleFreq, lineartaper = None, 

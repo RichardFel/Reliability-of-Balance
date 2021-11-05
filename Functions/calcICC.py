@@ -18,11 +18,11 @@ def calculateICCMDC(measurement):
 
     for filename in files:
         if measurement == 'FM':
-            directory = mainDirectory + '/Results/Single measurement'
+            directory = mainDirectory + '/Results_MakingSense/Single measurement'
             os.chdir(directory)
             nFilesPP = 2
         elif measurement == 'AM':
-            directory = mainDirectory + '/Results/Averaged measurements'
+            directory = mainDirectory + '/Results_MakingSense/Averaged measurements'
             os.chdir(directory)       
             nFilesPP = 4
         
@@ -128,10 +128,10 @@ def calculateICCMDC(measurement):
                       
             
         if measurement == 'FM':
-            saveDirectory = mainDirectory + '/Results/ICC single measurement'
+            saveDirectory = mainDirectory + '/Results_MakingSense/ICC single measurement'
             os.chdir(saveDirectory)
         elif measurement == 'AM':
-            saveDirectory = mainDirectory + '/Results/ICC averaged measurement'
+            saveDirectory = mainDirectory + '/Results_MakingSense/ICC averaged measurement'
             os.chdir(saveDirectory)       
             
         results = results.transpose()

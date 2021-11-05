@@ -1,6 +1,6 @@
 import numpy as np
 from scipy import signal
-from visualise import Visualisation
+from Functions.visualise import Visualisation
 
 
 class Processing: 
