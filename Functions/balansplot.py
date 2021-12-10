@@ -7,12 +7,14 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib import ticker
 
-
 iccValue = 0.75
 target = np.ones(35) * iccValue
-mainDirectory = os.getcwd()
-saveTo = mainDirectory + '/Figures'
+mainDirectory = '/Users/richard/Library/Mobile Documents/com~apple~CloudDocs/Desktop/PhD/Algorithms PhD/Beroerte/Reliability of Balance'
 
+saveTo = mainDirectory + '/Figures'
+sns.set_style("darkgrid")
+sns.set_context("paper",font_scale=1.25)
+  
 def plotSIT():
     directory = mainDirectory + '/Results_MakingSense/ICC single measurement'
     os.chdir(directory)
@@ -34,17 +36,40 @@ def plotSIT():
     data_plot.loc[29:36,'Type'] = 'Complexity features' 
     data_plot['Measurement'] = 'FM' 
     
-    sns.set_style("darkgrid")
-    sns.despine()
-    sns.set_context("paper",font_scale=1.25)
+    fig1, axICC = plt.subplots(2,3,figsize=(25,25),dpi = 110, gridspec_kw={'width_ratios': [(21/35), (8/35), (6/35)]})
+    plt.tight_layout()
+    plt.subplots_adjust(left=0.05, bottom=0.25, right=None, top=0.95, wspace=0.02, hspace=0.05)
+
+    SMALL_SIZE = 16
+    MEDIUM_SIZE = 16
+    BIGGER_SIZE = 16
     
+    plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+    plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+    plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+    plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+    plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+    plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+        
     
     fig1, axICC = plt.subplots(2,3,figsize=(25,25),dpi = 110, gridspec_kw={'width_ratios': [(21/35), (8/35), (6/35)]})
     plt.tight_layout()
+#    sns.despine()
     
-    plt.subplots_adjust(left=0.05, bottom=0.15, right=None, top=0.95, wspace=0.02, hspace=0.05)
+    plt.subplots_adjust(left=0.05, bottom=0.25, right=None, top=0.95, wspace=0.02, hspace=0.05)
+    SMALL_SIZE = 16
+    MEDIUM_SIZE = 16
+    BIGGER_SIZE = 16
     
-    
+    plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+    plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+    plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+    plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+    plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+    plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+        
     line1 = sns.lineplot(x = 'xaxis', y = 'ICC', data = data_plot.loc[data_plot.Type == 'Spatio-Temporal features'], ax=axICC[0,0],marker = 'o', hue = 'Measurement', style = 'Type',markersize = 9, palette = 'deep')
     line2 = sns.lineplot(x = 'xaxis', y = 'ICC', data = data_plot.loc[data_plot.Type == 'Frequency features'], ax=axICC[0,1],marker = 'o', hue = 'Measurement', style = 'Type',markersize = 9, palette = 'deep')
     line3 = sns.lineplot(x = 'xaxis', y = 'ICC', data = data_plot.loc[data_plot.Type == 'Complexity features'], ax=axICC[0,2],marker = 'o', hue = 'Measurement', style = 'Type',markersize = 9, palette = 'deep')
@@ -158,7 +183,7 @@ def plotSIT():
     axICC[1,1].set_yticklabels([])
     axICC[1,2].set_yticklabels([])
     axICC[1,0].set_xlabel('')
-    axICC[1,0].set_ylabel('MDC expressed as STD')
+    axICC[1,0].set_ylabel('rMDC')
     axICC[1,1].set_xlabel('')
     axICC[1,1].set_ylabel('')
     axICC[1,2].set_xlabel('')
@@ -309,8 +334,20 @@ def plotStanding():
         
         fig1, axICC = plt.subplots(2,3,figsize=(25,25),dpi = 110, gridspec_kw={'width_ratios': [(21/35), (8/35), (6/35)]})
         plt.tight_layout()
+        plt.subplots_adjust(left=0.05, bottom=0.25, right=None, top=0.95, wspace=0.02, hspace=0.05)
+
+        SMALL_SIZE = 16
+        MEDIUM_SIZE = 16
+        BIGGER_SIZE = 16
         
-        plt.subplots_adjust(left=0.05, bottom=0.15, right=None, top=0.95, wspace=0.02, hspace=0.05)
+        plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+        plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+        plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+        plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+        plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+        plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+        plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+        
         
         line1 = sns.lineplot(x = 'xaxis', y = 'ICC', data = data_plot.loc[data_plot.Type == 'Spatio-Temporal features'], ax=axICC[0,0],marker = 'o', hue = 'Measurement', style = 'Type',markersize = 9, palette = 'deep')
         line2 = sns.lineplot(x = 'xaxis', y = 'ICC', data = data_plot.loc[data_plot.Type == 'Frequency features'], ax=axICC[0,1],marker = 'o', hue = 'Measurement', style = 'Type',markersize = 9, palette = 'deep')
@@ -443,7 +480,7 @@ def plotStanding():
         axICC[1,1].set_yticklabels([])
         axICC[1,2].set_yticklabels([])
         axICC[1,0].set_xlabel('')
-        axICC[1,0].set_ylabel('MDC expressed as STD')
+        axICC[1,0].set_ylabel('rMDC')
         axICC[1,1].set_xlabel('')
         axICC[1,1].set_ylabel('')
         axICC[1,2].set_xlabel('')

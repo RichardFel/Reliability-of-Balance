@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import pingouin as pg
 
-mainDirectory = os.getcwd()
+mainDirectory = '/Users/richard/Library/Mobile Documents/com~apple~CloudDocs/Desktop/PhD/Algorithms PhD/Beroerte/Reliability of Balance'
 
 
 def calculateICCMDC(measurement):
@@ -100,10 +100,13 @@ def calculateICCMDC(measurement):
             SEM = (np.std(variableDF.loc[:,variable]) * np.sqrt(1 - ICC))
             MDC = (1.96 * SEM * np.sqrt(2))
             SEM = SEM.round(3)
-            ICC_CI = str(ICC.round(3))+ ' ['+ str(CI[0]) + ',' + str(CI[1]) + ']'    
+            ICC_CI = str(ICC.round(3))+ ' ['+ str(CI[0]) + ',' + str(CI[0]) + ']'    
             MDC_SEM = str(MDC.round(3))+ ' (' + str(SEM) + ')'
             results.loc['ICC',variable] = ICC
             results.loc['ICC_CI',variable] = ICC_CI
+            results.loc['CImin',variable] = CI[0]
+            results.loc['CImax',variable] = CI[1]
+
             results.loc['MDC',variable] = MDC
             results.loc['MDC_SEM',variable] = MDC_SEM
             
@@ -142,7 +145,7 @@ def calculateICCMDC(measurement):
      
 
 if __name__ == '__main__':
-#    calculateICCMDC(measurement = 'FM')
+    calculateICCMDC(measurement = 'FM')
     calculateICCMDC(measurement = 'AM')
     
     

@@ -46,6 +46,8 @@ def calcFeatures(settings, plotje, verbose = None):
     for file in files:
         split = file.split(' ')
         subject = split[0]
+        if subject == '.DS_Store' :
+            continue
         testType = file
         trial = 0
         print(f'\n Analysing subject {subject} \n')

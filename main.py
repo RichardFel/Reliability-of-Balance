@@ -21,7 +21,7 @@ from Functions.calcBalanceFeautres import calcFeatures
                                           
 testTypes = ('Test','Hertest')                                                 
 nSubjects = 0                                                                   
-tasks = numpy.array([('Onstabiel zitten', 60,0)])  
+tasks = numpy.array([('Test', 60,0)])  
 
 settings = {'testTypes': testTypes,
             'tasks': tasks
