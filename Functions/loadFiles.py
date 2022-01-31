@@ -146,7 +146,6 @@ class loadCsv():
                       error_bad_lines = False
                       )     
         data.dropna(how = 'any',inplace = True)
-        breakpoint()
         for i in data.columns[1:]:
             data[i] = pd.to_numeric(data[i], downcast = 'float')          
         

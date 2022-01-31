@@ -29,7 +29,7 @@ settings = {'testTypes': testTypes,
 
 
 def main():
-    calcFeatures(settings, plotje = False, verbose = True )
+    calcFeatures(settings, plotje = True, verbose = True )
 
 if __name__ == "__main__":
     main()
